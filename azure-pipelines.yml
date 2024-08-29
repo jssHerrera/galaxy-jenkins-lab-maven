@@ -40,8 +40,8 @@ stages:
         cliProjectName: 'labmaven02'
         extraProperties: |
           sonar.exclusions=**/*.bin
-          sonar.projectKey=labmaven01
-          sonar.projectName=labmaven01
+          sonar.projectKey=labmaven02
+          sonar.projectName=labmaven02
           sonar.sources=src/main
           sonar.sourceEncoding=UTF-8
           sonar.language=java
