@@ -36,8 +36,8 @@ stages:
         SonarQube: 'sc_sonarqube_prd'
         scannerMode: 'CLI'
         configMode: 'manual'
-        cliProjectKey: 'labmaven03'
-        cliProjectName: 'labmaven03'
+        cliProjectKey: 'labmaven02'
+        cliProjectName: 'labmaven02'
         extraProperties: |
           sonar.exclusions=**/*.bin
           sonar.projectKey=labmaven01
