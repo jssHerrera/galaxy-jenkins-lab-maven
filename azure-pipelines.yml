@@ -10,64 +10,80 @@ stages:
   displayName: Contruyendo Aplicación
   jobs:
   - job: job01
+    pool:
+      vmImage: 'ubuntu-latest'
+#    container: maven:3.8.5-openjdk-17-slim
     displayName: Compilando
     steps:
-    - task: MavenAuthenticate@0
-      inputs:
-        artifactsFeeds: 'devsecops08092024'
-      displayName: Autenticando Artifacts
-    
-    - task: SonarQubePrepare@6
-      inputs:
-        SonarQube: 'sc_sonarqube_prd'
-        scannerMode: 'CLI'
-        configMode: 'manual'
-        cliProjectKey: 'labmaven02'
-        cliProjectName: 'labmaven02'
-        cliSources: '.'
-      displayName: Preparar Configuracion de Sonar
-    - task: SonarQubeAnalyze@6
-      inputs:
-        jdkversion: 'JAVA_HOME_17_X64'
-      displayName: Analizando Codigo
-    - task: SonarQubePublish@6
-      inputs:
-        pollingTimeoutSec: '300'
-      displayName: Publicando Resultado
+    # - task: MavenAuthenticate@0
+    #   inputs:
+    #     artifactsFeeds: 'devsecops08092024'
+    #   displayName: Autenticando Artifacts
     - task: Maven@4
       inputs:
         mavenPomFile: 'pom.xml'
         publishJUnitResults: true
         testResultsFiles: '**/surefire-reports/TEST-*.xml'
         javaHomeOption: 'JDKVersion'
-        jdkVersionOption: '1.17'
+        jdkVersionOption: '1.11'
         mavenVersionOption: 'Default'
         mavenAuthenticateFeed: false
         effectivePomSkip: false
         sonarQubeRunAnalysis: false
       displayName: Contruyendo Artefacto
-    - task: Maven@4
+    - task: SonarQubePrepare@6
       inputs:
-        mavenPomFile: 'pom.xml'
-        goals: 'deploy'
-        publishJUnitResults: true
-        testResultsFiles: '**/surefire-reports/TEST-*.xml'
-        javaHomeOption: 'JDKVersion'
-        mavenVersionOption: 'Default'
-        mavenAuthenticateFeed: false
-        effectivePomSkip: false
-        sonarQubeRunAnalysis: false
-      displayName: Publicando Artefacto en Artifacts
-    - task: CopyFiles@2
+        SonarQube: 'sc_sonarqube_prd'
+        scannerMode: 'CLI'
+        configMode: 'manual'
+        cliProjectKey: 'labmaven03'
+        cliProjectName: 'labmaven03'
+        extraProperties: |
+          sonar.exclusions=**/*.bin
+          sonar.projectKey=labmaven01
+          sonar.projectName=labmaven01
+          sonar.sources=src/main
+          sonar.sourceEncoding=UTF-8
+          sonar.language=java
+          sonar.tests=src/test
+          sonar.junit.reportsPath=target/surefire-reports
+          sonar.surefire.reportsPath=target/surefire-reports
+          sonar.jacoco.reportPath=target/jacoco.exec
+          sonar.java.binaries=target/classes
+          sonar.java.coveragePlugin=jacoco
+          sonar.coverage.jacoco.xmlReportPaths=target/jacoco.xml
+          sonar.exclusions=**/*IT.java,**/*TEST.java,**/*Test.java,**/src/it**,**/src/test**,**/gradle/wrapper**
+          sonar.java.libraries=target/*.jar
+    - powershell: |
+        $params = "$env:SONARQUBE_SCANNER_PARAMS" -replace '"sonar.branch.name":"[\w,/,-]*"\,?'
+        Write-Host "##vso[task.setvariable variable=SONARQUBE_SCANNER_PARAMS]$params"
+    - task: SonarQubeAnalyze@6
       inputs:
-        Contents: 'target/*.jar'
-        TargetFolder: '$(build.artifactstagingdirectory)'
-      displayName: Copiando Artefacto
-    - task: PublishBuildArtifacts@1
+        jdkversion: 'JAVA_HOME_17_X64'
+    - task: SonarQubePublish@6
       inputs:
-        PathtoPublish: '$(Build.ArtifactStagingDirectory)'
-        ArtifactName: 'artifact'
-        publishLocation: 'Container'
-      displayName: Publicando Artefacto
-    
+        pollingTimeoutSec: '300'
 
+    # - task: Maven@4
+    #   inputs:
+    #     mavenPomFile: 'pom.xml'
+    #     goals: 'deploy'
+    #     publishJUnitResults: true
+    #     testResultsFiles: '**/surefire-reports/TEST-*.xml'
+    #     javaHomeOption: 'JDKVersion'
+    #     mavenVersionOption: 'Default'
+    #     mavenAuthenticateFeed: false
+    #     effectivePomSkip: false
+    #     sonarQubeRunAnalysis: false
+    #   displayName: Publicando Artefacto en Artifacts
+    # - task: CopyFiles@2
+    #   inputs:
+    #     Contents: 'target/*.jar'
+    #     TargetFolder: '$(build.artifactstagingdirectory)'
+    #   displayName: Copiando Artefacto
+    # - task: PublishBuildArtifacts@1
+    #   inputs:
+    #     PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+    #     ArtifactName: 'artifact'
+    #     publishLocation: 'Container'
+    #   displayName: Publicando Artefacto
