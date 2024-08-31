@@ -37,15 +37,15 @@ stages:
         testType: 'code'
         codeSeverityThreshold: 'medium'
         failOnIssues: false
-        projectName: '$(Build_Repository_Name)'
+        projectName: '$(Build.Repository.Name)'
         organization: 'jssHerrera'
     - task: SonarQubePrepare@6
       inputs:
         SonarQube: 'sc_sonarqube_prd'
         scannerMode: 'CLI'
         configMode: 'manual'
-        cliProjectKey: 'labmaven02'
-        cliProjectName: 'labmaven02'
+        cliProjectKey: 'labmaven03'
+        cliProjectName: 'labmaven03'
         extraProperties: |
           sonar.exclusions=**/*.bin
           sonar.projectKey=labmaven01
@@ -65,9 +65,9 @@ stages:
     - powershell: |
         $params = "$env:SONARQUBE_SCANNER_PARAMS" -replace '"sonar.branch.name":"[\w,/,-]*"\,?'
         Write-Host "##vso[task.setvariable variable=SONARQUBE_SCANNER_PARAMS]$params"
-    # - task: SonarQubeAnalyze@6
-    #   inputs:
-    #     jdkversion: 'JAVA_HOME_17_X64'
+    - task: SonarQubeAnalyze@6
+      inputs:
+        jdkversion: 'JAVA_HOME_17_X64'
     - task: SonarQubePublish@6
       inputs:
         pollingTimeoutSec: '300'
@@ -95,3 +95,6 @@ stages:
     #     ArtifactName: 'artifact'
     #     publishLocation: 'Container'
     #   displayName: Publicando Artefacto
+    
+ 
+ 
