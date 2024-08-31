@@ -31,6 +31,14 @@ stages:
         effectivePomSkip: false
         sonarQubeRunAnalysis: false
       displayName: Contruyendo Artefacto
+    - task: SnykSecurityScan@1
+      inputs:
+        serviceConnectionEndpoint: 'sc_snyk_sca'
+        testType: 'code'
+        codeSeverityThreshold: 'medium'
+        failOnIssues: false
+        projectName: '$(Build_Repository_Name)'
+        organization: 'jssHerrera'
     - task: SonarQubePrepare@6
       inputs:
         SonarQube: 'sc_sonarqube_prd'
@@ -57,9 +65,9 @@ stages:
     - powershell: |
         $params = "$env:SONARQUBE_SCANNER_PARAMS" -replace '"sonar.branch.name":"[\w,/,-]*"\,?'
         Write-Host "##vso[task.setvariable variable=SONARQUBE_SCANNER_PARAMS]$params"
-    - task: SonarQubeAnalyze@6
-      inputs:
-        jdkversion: 'JAVA_HOME_17_X64'
+    # - task: SonarQubeAnalyze@6
+    #   inputs:
+    #     jdkversion: 'JAVA_HOME_17_X64'
     - task: SonarQubePublish@6
       inputs:
         pollingTimeoutSec: '300'
