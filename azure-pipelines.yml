@@ -40,8 +40,8 @@ stages:
         cliProjectName: 'labmaven02'
         extraProperties: |
           sonar.exclusions=**/*.bin
-          sonar.projectKey=labmaven02
-          sonar.projectName=labmaven02
+          sonar.projectKey=labmaven01
+          sonar.projectName=labmaven01
           sonar.sources=src/main
           sonar.sourceEncoding=UTF-8
           sonar.language=java
@@ -63,3 +63,27 @@ stages:
     - task: SonarQubePublish@6
       inputs:
         pollingTimeoutSec: '300'
+
+    # - task: Maven@4
+    #   inputs:
+    #     mavenPomFile: 'pom.xml'
+    #     goals: 'deploy'
+    #     publishJUnitResults: true
+    #     testResultsFiles: '**/surefire-reports/TEST-*.xml'
+    #     javaHomeOption: 'JDKVersion'
+    #     mavenVersionOption: 'Default'
+    #     mavenAuthenticateFeed: false
+    #     effectivePomSkip: false
+    #     sonarQubeRunAnalysis: false
+    #   displayName: Publicando Artefacto en Artifacts
+    # - task: CopyFiles@2
+    #   inputs:
+    #     Contents: 'target/*.jar'
+    #     TargetFolder: '$(build.artifactstagingdirectory)'
+    #   displayName: Copiando Artefacto
+    # - task: PublishBuildArtifacts@1
+    #   inputs:
+    #     PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+    #     ArtifactName: 'artifact'
+    #     publishLocation: 'Container'
+    #   displayName: Publicando Artefacto
