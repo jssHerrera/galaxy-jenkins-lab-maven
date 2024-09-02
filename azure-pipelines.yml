@@ -31,12 +31,22 @@ stages:
         effectivePomSkip: false
         sonarQubeRunAnalysis: false
       displayName: Contruyendo Artefacto
+    
     - task: SnykSecurityScan@1
       inputs:
         serviceConnectionEndpoint: 'sc_snyk_sca'
         testType: 'code'
         codeSeverityThreshold: 'medium'
-        failOnIssues: false
+        failOnIssues: true
+        projectName: '$(Build.Repository.Name)'
+        organization: 'jssherrera'
+    - task: SnykSecurityScan@1
+      inputs:
+        serviceConnectionEndpoint: 'sc_snyk_sca'
+        testType: 'app'
+        monitorWhen: 'always'
+        codeSeverityThreshold: 'medium'
+        failOnIssues: true
         projectName: '$(Build.Repository.Name)'
         organization: 'jssherrera'
     - task: SonarQubePrepare@6
