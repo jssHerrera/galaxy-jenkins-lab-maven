@@ -38,7 +38,7 @@ stages:
         codeSeverityThreshold: 'medium'
         failOnIssues: false
         projectName: '$(Build.Repository.Name)'
-        organization: 'herrera.denis.30'
+        organization: 'jssHerrera'
     - task: SonarQubePrepare@6
       inputs:
         SonarQube: 'sc_sonarqube_prd'
